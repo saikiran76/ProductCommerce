@@ -15,15 +15,6 @@ colorPicker.addEventListener('click', (event) => {
   }
 });
 
-const cartNumber = document.querySelector('.adder');
-const cart = document.querySelector('.cart');
-
-cart.addEventListener('click', ()=>{
-  // cartNumber.textContent = parseInt(cartNumber.textContent) + 1;
-  cartNumber.querySelector('h3').textContent = parseInt(cartNumber.querySelector('h3').textContent) + 1;
-})
-
-
 // fetching data
 document.addEventListener('DOMContentLoaded', () => {
   async function displayData() {
@@ -36,12 +27,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // title, vendor, description
       const title = document.querySelector('#title');
+      const fetchedTitle = jsonData.product.title;
+      const price = document.querySelector("#price")
+      const fetchedPrice = jsonData.product.price;
+      const actualPrice = document.querySelector(".off");
+      const fetchedActualPrice = jsonData.product.compare_at_price;
       const vendor = document.querySelector('#vendor');
       const description = document.querySelector('.product');
+      const cartNumber = document.querySelector('.adder');
+      const cart = document.querySelector('.cart');
+      const sizeOptions = document.querySelectorAll('.var');
+      // product.options[1].values
+      const fetchedOptions = jsonData.product.options[1].values;
+
+      console.log('size options are' + sizeOptions);
+
+      cart.addEventListener('click', ()=>{
+        // cartNumber.textContent = parseInt(cartNumber.textContent) + 1;
+        cartNumber.querySelector('h3').textContent = parseInt(cartNumber.querySelector('h3').textContent) + 1;
+        alert(`Item ${fetchedTitle} is added to the cart`);
+      })
+
 
       title.innerHTML = jsonData.product.title;
       vendor.innerHTML = jsonData.product.vendor;
       description.innerHTML = jsonData.product.description;
+      price.innerHTML = fetchedPrice;
+      actualPrice.innerHTML = fetchedActualPrice;
 
       const images = jsonData.product.images;
 
@@ -59,7 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // loading the colors in the color picker
       const colors = jsonData.product.options[0].values
       console.log(colors)
-      const colorItems = document.querySelector('.color-item');
+      const colorItems = document.querySelectorAll('.color-item');
+      console.log(colorItems);
 
       colorItems.forEach((item, index) => {
         const color = colors[index];
@@ -67,10 +80,59 @@ document.addEventListener('DOMContentLoaded', () => {
         const colorValue = color[colorName];
         item.style.backgroundColor = colorValue;
 
-        // Add color name as data attribute for future reference if needed
         item.dataset.colorName = colorName;
     });
 
+    sizeOptions.forEach((sizeOptionElement, index) => {
+      const pElement = sizeOptionElement.querySelector('p');
+    
+      if (pElement) {
+        pElement.innerHTML = fetchedOptions[index]
+      } else {
+        console.error("Could not find the p element within a size option element");
+      }
+    });
+
+    // Variant selection and storage logic 
+
+    const selectedVariants = {}; 
+    // color selection variations at the user end
+    colorItems.forEach(colorItem => {
+      colorItem.addEventListener('click', () => {
+        selectedVariants.color = ""; 
+        colorItems.forEach(item => item.classList.remove('selected'));
+
+        colorItem.classList.add('selected');
+
+        if (colorItem.firstChild.classList.contains('fa-check')) {
+          selectedVariants.color = "Color 1"; 
+        } else if (colorItem.firstChild.classList.contains('fas fa-check')) {
+          selectedVariants.color = "Color 2"; 
+        }
+
+        console.log("Selected Variants:", selectedVariants); 
+      });
+    });
+
+    // Size Selection
+    sizeOptions.forEach(sizeOption => {
+      const radioButton = sizeOption.querySelector('input[type="radio"]'); 
+      radioButton.addEventListener('change', () => {
+        if (radioButton.checked) {
+          selectedVariants.size = radioButton.nextElementSibling.textContent.trim(); 
+        }
+
+        console.log("Selected Variants:", selectedVariants); // For debugging
+      });
+    });
+
+    function displayConfirmation() {
+      if (selectedVariants.color && selectedVariants.size) {
+        alert("You have selected " + selectedVariants.color + " and " + selectedVariants.size + ".");
+      } else {
+        alert("Please select both color and size.");
+      }
+    }
 
       // loading the primary image (the display image)
 
@@ -103,5 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   displayData();
 });
+
+
+
 
 
