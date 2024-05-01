@@ -2,19 +2,6 @@ console.log('====================================');
 console.log("Connected");
 console.log('====================================');
 
-
-const colorPicker = document.querySelector('.color-picker');
-const colorItems = document.querySelectorAll('.color-item');
-
-colorPicker.addEventListener('click', (event) => {
-  const clickedItem = event.target;
-  if (clickedItem.classList.contains('color-item')) {
-    colorItems.forEach(item => item.classList.remove('selected'));
-    clickedItem.classList.add('selected');
-    console.log(`Selected color: ${clickedItem.dataset.color}`);
-  }
-});
-
 // fetching data
 document.addEventListener('DOMContentLoaded', () => {
   async function displayData() {
@@ -37,17 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const cartNumber = document.querySelector('.adder');
       const cart = document.querySelector('.cart');
       const sizeOptions = document.querySelectorAll('.var');
+      const cartSection = document.querySelector(".add-to-cart");
+      const message = document.querySelector('#message')
       // product.options[1].values
       const fetchedOptions = jsonData.product.options[1].values;
 
       console.log('size options are' + sizeOptions);
-
-      cart.addEventListener('click', ()=>{
-        // cartNumber.textContent = parseInt(cartNumber.textContent) + 1;
-        cartNumber.querySelector('h3').textContent = parseInt(cartNumber.querySelector('h3').textContent) + 1;
-        alert(`Item ${fetchedTitle} is added to the cart`);
-      })
-
 
       title.innerHTML = jsonData.product.title;
       vendor.innerHTML = jsonData.product.vendor;
@@ -72,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const colors = jsonData.product.options[0].values
       console.log(colors)
       const colorItems = document.querySelectorAll('.color-item');
-      console.log(colorItems);
+      console.log('Color-items are' + colorItems);
 
       colorItems.forEach((item, index) => {
         const color = colors[index];
@@ -83,37 +65,61 @@ document.addEventListener('DOMContentLoaded', () => {
         item.dataset.colorName = colorName;
     });
 
+    function rgbToHex(rgb) {
+      const [r, g, b] = rgb.match(/\d+/g).map(Number);
+      const hex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+      
+      return hex.toUpperCase(); 
+  }
+
+  function hexToColorName(hex) {
+    const colorMap = {
+        '#000000': 'Black',
+        '#FFFFFF': 'White',
+        '#FF0000': 'Red',
+        '#00FF00': 'Green',
+        '#0000FF': 'Blue',
+        "#ECDECC": "Yellow",
+        "#BBD278":"Green",
+        "#BBC1F8":"Blue",
+        "#FFD3F8":"Pink"
+          };
+
+    hex = hex.toUpperCase();
+    if (colorMap.hasOwnProperty(hex)) {
+        return colorMap[hex];
+    } else {
+        return 'Unknown';
+    }
+}
+
+    const selectedVariants = {}; 
+
+    colorPicker.addEventListener('click', (event) => {
+      const clickedItem = event.target;
+      if (clickedItem.classList.contains('color-item')) {
+        colorItems.forEach(item => item.classList.remove('selected'));
+        clickedItem.classList.add('selected');
+        console.log(`Selected color: ${clickedItem.style.backgroundColor}`);
+        selectedVariants['color'] = rgbToHex(clickedItem.style.backgroundColor) 
+        selectedVariants['color'] = hexToColorName(selectedVariants['color']);
+
+    }
+});
+
     sizeOptions.forEach((sizeOptionElement, index) => {
       const pElement = sizeOptionElement.querySelector('p');
     
       if (pElement) {
         pElement.innerHTML = fetchedOptions[index]
       } else {
-        console.error("Could not find the p element within a size option element");
+        console.error("Could not find the p");
       }
     });
 
-    // Variant selection and storage logic 
-
-    const selectedVariants = {}; 
-    // color selection variations at the user end
-    colorItems.forEach(colorItem => {
-      colorItem.addEventListener('click', () => {
-        selectedVariants.color = ""; 
-        colorItems.forEach(item => item.classList.remove('selected'));
-
-        colorItem.classList.add('selected');
-
-        if (colorItem.firstChild.classList.contains('fa-check')) {
-          selectedVariants.color = "Color 1"; 
-        } else if (colorItem.firstChild.classList.contains('fas fa-check')) {
-          selectedVariants.color = "Color 2"; 
-        }
-
-        console.log("Selected Variants:", selectedVariants); 
-      });
-    });
-
+  // Variant selection and storage logic 
+   
+  const Picker = document.querySelector('.picker');
     // Size Selection
     sizeOptions.forEach(sizeOption => {
       const radioButton = sizeOption.querySelector('input[type="radio"]'); 
@@ -122,17 +128,44 @@ document.addEventListener('DOMContentLoaded', () => {
           selectedVariants.size = radioButton.nextElementSibling.textContent.trim(); 
         }
 
-        console.log("Selected Variants:", selectedVariants); // For debugging
+        console.log("Selected Variants:", selectedVariants); 
       });
     });
 
     function displayConfirmation() {
       if (selectedVariants.color && selectedVariants.size) {
         alert("You have selected " + selectedVariants.color + " and " + selectedVariants.size + ".");
+        // add a new element into the html document indicating the message
+        let confirmMessage = document.createElement("h3");
+        confirmMessage.setAttribute("id","confirm-message")
+        confirmMessage.innerText= "You have selected "+ selectedVariants.color+ " and " + selectedVariants.size;
+        message.style.backgroundColor = selectedVariants.color;
+      
       } else {
         alert("Please select both color and size.");
       }
     }
+
+    cart.addEventListener('click', () => {
+      // Checking the variant selection (both of the variants)
+      if (!selectedVariants.color || !selectedVariants.size) {
+        alert("Please select both color and size before adding to cart.");
+        return;
+      }
+      const message = `Embrace Sideboard with Color ${selectedVariants.color} and Size ${selectedVariants.size} added to cart`;
+    
+      alert(message);
+    
+      console.log("Selected item to add to cart:", selectedVariants); 
+    });
+
+    // cart.addEventListener('click', ()=>{
+    //   // cartNumber.textContent = parseInt(cartNumber.textContent) + 1;
+    //   cartNumber.querySelector('h3').textContent = parseInt(cartNumber.querySelector('h3').textContent) + 1;
+    //   alert(`Item ${fetchedTitle} is added to the cart`);
+    // })
+
+
 
       // loading the primary image (the display image)
 
@@ -165,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   displayData();
 });
-
 
 
 
