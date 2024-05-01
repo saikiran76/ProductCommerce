@@ -242,6 +242,12 @@ a:active {
   .child-img{
     padding: 0.5em;
   }
+  .size > .var{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 2em;
+  }
  
 }
 
