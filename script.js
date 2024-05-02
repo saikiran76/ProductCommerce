@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const sizeOptions = document.querySelectorAll('.var');
       const cartSection = document.querySelector(".add-to-cart");
       const message = document.querySelector('#message')
+      const colorPicker = document.querySelector('.picker')
       // product.options[1].values
       const fetchedOptions = jsonData.product.options[1].values;
 
