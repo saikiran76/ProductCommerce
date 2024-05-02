@@ -65,34 +65,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         item.dataset.colorName = colorName;
     });
-
-    function rgbToHex(rgb) {
-      const [r, g, b] = rgb.match(/\d+/g).map(Number);
-      const hex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-      
-      return hex.toUpperCase(); 
-  }
-
-  function hexToColorName(hex) {
-    const colorMap = {
-        '#000000': 'Black',
-        '#FFFFFF': 'White',
-        '#FF0000': 'Red',
-        '#00FF00': 'Green',
-        '#0000FF': 'Blue',
-        "#ECDECC": "Yellow",
-        "#BBD278":"Green",
-        "#BBC1F8":"Blue",
-        "#FFD3F8":"Pink"
-          };
-
-    hex = hex.toUpperCase();
-    if (colorMap.hasOwnProperty(hex)) {
-        return colorMap[hex];
-    } else {
-        return 'Unknown';
+    // helper functions for color conversions
+      function rgbToHex(rgb) {
+        const [r, g, b] = rgb.match(/\d+/g).map(Number);
+        const hex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+        
+        return hex.toUpperCase(); 
     }
-}
+
+    function hexToColorName(hex) {
+      const colorMap = {
+          '#000000': 'Black',
+          '#FFFFFF': 'White',
+          '#FF0000': 'Red',
+          '#00FF00': 'Green',
+          '#0000FF': 'Blue',
+          "#ECDECC": "Yellow",
+          "#BBD278":"Green",
+          "#BBC1F8":"Blue",
+          "#FFD3F8":"Pink"
+            };
+
+      hex = hex.toUpperCase();
+      if (colorMap.hasOwnProperty(hex)) {
+          return colorMap[hex];
+      } else {
+          return 'Unknown';
+      }
+  }
 
     const selectedVariants = {}; 
 
@@ -105,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedVariants['color'] = rgbToHex(clickedItem.style.backgroundColor) 
         selectedVariants['color'] = hexToColorName(selectedVariants['color']);
 
-    }
-});
+      }
+    });
 
     sizeOptions.forEach((sizeOptionElement, index) => {
       const pElement = sizeOptionElement.querySelector('p');
@@ -135,12 +135,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function displayConfirmation() {
       if (selectedVariants.color && selectedVariants.size) {
-        alert("You have selected " + selectedVariants.color + " and " + selectedVariants.size + ".");
+        console.log("You have selected " + selectedVariants.color + " and " + selectedVariants.size + ".");
         // add a new element into the html document indicating the message
-        let confirmMessage = document.createElement("h3");
-        confirmMessage.setAttribute("id","confirm-message")
-        confirmMessage.innerText= "You have selected "+ selectedVariants.color+ " and " + selectedVariants.size;
+
+        // let confirmMessage = document.createElement("h3");
         message.style.backgroundColor = selectedVariants.color;
+        // confirmMessage.setAttribute("id","confirm-message")
+        // confirmMessage.innerText= "You have selected "+ selectedVariants.color+ " and " + selectedVariants.size;
+        message.querySelector('p').innerHTML = `Embrace Sideboard with color ${selectedVariants.color} and size ${selectedVariants.size} added to cart`
+        // message.style.backgroundColor = selectedVariants.color;
       
       } else {
         alert("Please select both color and size.");
@@ -154,17 +157,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       const message = `Embrace Sideboard with Color ${selectedVariants.color} and Size ${selectedVariants.size} added to cart`;
+
+      displayConfirmation()
     
       alert(message);
     
       console.log("Selected item to add to cart:", selectedVariants); 
     });
 
-    // cart.addEventListener('click', ()=>{
-    //   // cartNumber.textContent = parseInt(cartNumber.textContent) + 1;
-    //   cartNumber.querySelector('h3').textContent = parseInt(cartNumber.querySelector('h3').textContent) + 1;
-    //   alert(`Item ${fetchedTitle} is added to the cart`);
-    // })
+    // event listener to update the cart number
+
+    cart.addEventListener('click', ()=>{
+      // cartNumber.textContent = parseInt(cartNumber.textContent) + 1;
+      cartNumber.querySelector('h3').textContent = parseInt(cartNumber.querySelector('h3').textContent) + 1;
+      console.log(`Item ${fetchedTitle} is added to the cart`);
+    })
 
 
 
@@ -199,6 +206,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   displayData();
 });
+
+
+
+
+
 
 
 
