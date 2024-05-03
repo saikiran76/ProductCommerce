@@ -12,10 +12,10 @@ body {
 }
 
 .inner-detail{
-  width:70%;
+  width:80%;
   margin: 0 auto;
   padding: 1em;
-  height: 70%;
+  height: 90%;
 }
 
 .product{
@@ -149,12 +149,15 @@ p{
 
 .container{
   display: flex;
+  flex-direction: row;
   font-family: 'Inter', sans-serif;
 }
 
 .Scroll{
   width: 50%;
-  height: 100vh;
+  display: flex;
+  justify-content: center;
+  /* height: 130vh; */
 }
 
 .Details{
@@ -191,7 +194,8 @@ a:active {
 } */
 
 .slider{
-  padding:2em
+  padding:2em;
+  padding-bottom:0;
 
 }
 
@@ -224,17 +228,26 @@ a:active {
   }
   .Scroll{
     width: 100%;
+    /* height: 120vh; */
+    padding-bottom: 0;
+    margin-bottom: 0;
   }
-  .Slider{
-    width: 100%;
+  .slider{
+    /* width: 100%; */
+    padding-bottom: 0;
+    margin-bottom: 0;
+    overflow-y: hidden;
   }
 
   .slide{
     margin-top: 2em;
+    padding-left: 0.2em;
   }
 
   .Details{
     width: 100%;
+    margin-top: 0;
+    padding-top: 0;
   }
   .inner-detail{
     width: 90%;
@@ -242,6 +255,7 @@ a:active {
   .child-img{
     padding: 0.5em;
   }
+
   .size > .var{
     display: flex;
     justify-content: center;
@@ -268,6 +282,7 @@ a:active {
 }
 
   
+
 
 ::-webkit-scrollbar {
   width: 10px;
